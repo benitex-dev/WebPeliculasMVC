@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.36804.6 d17.14
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sistema-Web-Peliculas-MVC", "Sistema-Web-Peliculas-MVC\Sistema-Web-Peliculas-MVC.csproj", "{BE84898F-7114-4ED2-A08B-5E3848D6FD5F}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{BE84898F-7114-4ED2-A08B-5E3848D6FD5F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BE84898F-7114-4ED2-A08B-5E3848D6FD5F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BE84898F-7114-4ED2-A08B-5E3848D6FD5F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BE84898F-7114-4ED2-A08B-5E3848D6FD5F}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {A1258E34-A0FC-473F-833F-8F2585465262}
+	EndGlobalSection
+EndGlobal

@@ -1,10 +1,16 @@
-﻿namespace Sistema_Web_Peliculas_MVC.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Sistema_Web_Peliculas_MVC.Models
 {
     public class Plataforma
     {
-        private int Id { get; set; }
-        private string Nombre { get; set; }
+        public int Id { get; set; }
+        [Required]
+        [StringLength(50)]
+        public string Nombre { get; set; }
+        [Url]
         public string Url { get; set; }
+        [Url]
         public string LogoUrl { get; set; }
         public List<Pelicula>? PeliculasPlataforma { get; set; }
 

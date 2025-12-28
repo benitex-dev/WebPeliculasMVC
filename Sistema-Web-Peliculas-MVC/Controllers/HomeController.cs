@@ -17,17 +17,24 @@ namespace Sistema_Web_Peliculas_MVC.Controllers
             _context = context;
         }
 
-        public async Task<IActionResult> Index(int page = 1)
+        public async Task<IActionResult> Index(int page = 1, string txtBusqueda="")
         {
-            const int pageSize = 8;
+            const int pageSize = 5;
             if (page < 1) page = 1;
 
-            var totalItems = await _context.Peliculas.CountAsync();
+            var consulta = _context.Peliculas.AsQueryable();
+            if (!string.IsNullOrEmpty(txtBusqueda))
+            {
+                consulta = consulta.Where(p => p.Titulo.Contains(txtBusqueda));
+            }
+
+            var totalItems = await consulta.CountAsync();
             var totalPages = (int)System.Math.Ceiling(totalItems / (double)pageSize);
+
             if (totalPages == 0) totalPages = 1;
             if (page > totalPages) page = totalPages;
 
-            var peliculas = await _context.Peliculas
+            var peliculas = await consulta
                 .OrderBy(p => p.Id)
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
@@ -36,7 +43,7 @@ namespace Sistema_Web_Peliculas_MVC.Controllers
             ViewBag.CurrentPage = page;
             ViewBag.TotalPages = totalPages;
             ViewBag.PageSize = pageSize;
-
+            ViewBag.TxtBusqueda = txtBusqueda;
             return View(peliculas);
         }
 

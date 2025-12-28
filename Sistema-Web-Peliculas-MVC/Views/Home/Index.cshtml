@@ -3,11 +3,39 @@
     ViewData["Title"] = "Pagina de inicio";
     var currentPage = ViewBag.CurrentPage as int? ?? 1;
     var totalPages = ViewBag.TotalPages as int? ?? 1;
+    var busqueda = ViewBag.TxtBusqueda ?? "";
 }
 <div class="flex-row-1">
     <div class="container py-4">
+        @* panel de filtros *@
+        <div class="row mb-4">
+            <div class="col">
+                <form 
+                    asp-controller="Home" 
+                    asp-action="Index" 
+                    method="get" 
+                    class="row g-3 align-items-center"
+                >
+                    <div class="col-auto input-group" role="group">
+                        
+                            <button type="submit" class="btn btn-outline-primary">Filtrar</button>
+                        
+                        <input 
+                            type="text" 
+                            name="txtBusqueda" 
+                            class="form-control" 
+                            placeholder="Buscar peliculas..." 
+                            value="@busqueda"
+                            aria-label="Input group" aria-describedby="btnGroup"
+                            />
+                    </div>
+                   
+                    
+                </form>
+            </div>
         <div class="row g-3 mb-4 align-items-center">
-            <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 g-4">
+        @*listado peliculas*@           
+    <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 g-4">
                 @foreach (var item in Model)
                 {
                     <div class="col">
@@ -32,16 +60,16 @@
         <nav aria-label="Paginación peliculas">
             <ul class="pagination justify-content-center">
                 <li class="page-item @(currentPage == 1 ? "disabled" : "")">
-                    <a class="page-link" asp-controller="Home" asp-action="Index" asp-route-page="@(currentPage - 1)">Anterior</a>
+                    <a class="page-link" asp-controller="Home" asp-action="Index" asp-route-page="@(currentPage - 1)" asp-route-txtBusqueda="@busqueda">Anterior</a>
                 </li>
                 @for (int i = 1; i <= totalPages; i++)
                 {
                     <li class="page-item @(i == currentPage ? "active" : "")">
-                        <a class="page-link" asp-controller="Home" asp-action="Index" asp-route-page="@i">@i</a>
+                            <a class="page-link" asp-controller="Home" asp-action="Index" asp-route-txtBusqueda="@busqueda" asp-route-page="@i">@i</a>
                     </li>
                 }
                 <li class="page-item @(currentPage == totalPages ? "disabled" : "")">
-                    <a class="page-link" asp-controller="Home" asp-action="Index" asp-route-page="@(currentPage + 1)">Siguiente</a>
+                        <a class="page-link" asp-controller="Home" asp-action="Index" asp-route-page="@(currentPage + 1)" asp-route-txtBusqueda="@busqueda">Siguiente</a>
                 </li>
             </ul>
         </nav>

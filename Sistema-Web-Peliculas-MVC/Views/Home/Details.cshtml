@@ -1,0 +1,145 @@
+﻿@model Pelicula
+
+@{
+
+    var horas = Model.MinutosDuracion / 60;
+    var minutos = Model.MinutosDuracion % 60;
+    var anio = Model.FechaLanzamiento.Year;
+}
+<div class="container-xl my-5">
+    <!-- HEADER PELÍCULA -->
+    <div class="row g-5 mb-5">
+
+        <!-- POSTER -->
+        <div class="col-lg-4 mb-4 mb-lg-0">
+            <div class="poster-container mb-3 position-relative">
+                <img class="poster-img w-100 rounded-4"
+                     src="@Model.PosterUrlPortada" />
+                <div class="position-absolute top-0 start-0 w-100 h-100 rounded-4"
+                     style="background: linear-gradient(to top, rgba(0,0,0,.6), transparent);"></div>
+            </div>
+
+            <div class="d-flex gap-2">
+                <button class="btn btn-primary flex-grow-1 d-flex align-items-center justify-content-center gap-2">
+                    <span class="material-symbols-outlined filled">play_arrow</span>
+                    Ver Trailer
+                </button>
+                <button class="btn btn-outline-secondary" style="width:48px">
+                    <span class="material-symbols-outlined text-primary">favorite</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- INFO -->
+        <div class="col-lg-8">
+            <div class="d-flex flex-column gap-4">
+
+                <!-- TÍTULO -->
+                <div class="d-flex justify-content-between align-items-start flex-wrap gap-3">
+                    <h1 class="fw-bold display-5 m-0">@Model.Titulo</h1>
+                    <div class="px-3 py-2 rounded bg-surface-light border border-secondary d-flex align-items-center gap-1">
+                        <span class="material-symbols-outlined text-warning filled">star</span>
+                        <strong>@Model.PromedioRating</strong>
+                        <span class="small text-muted">/10</span>
+                    </div>
+                </div>
+
+                <!-- META -->
+                <div class="d-flex flex-wrap gap-3 text-muted-custom">
+                    <span>@anio</span>
+                    <span>•</span>
+                    <span>@horas hs @minutos mins</span>
+                    <span>•</span>
+                    <span class=" px-2">@Model.Genero.Descripcion</span>
+                </div>
+
+                <!-- GÉNEROS -->
+                @* <div class="d-flex flex-wrap gap-2">          
+                    
+                    <span class="badge rounded-pill badge-custom px-3 py-2">@Model.Genero.Descripcion</span>
+                </div> *@
+
+                <!-- SINOPSIS -->
+                <div>
+                    <h3 class="h5 fw-bold mb-2">Sinopsis</h3>
+                    <p class="text-muted-custom fs-6 lh-lg">
+                        @Model.Sinopsis
+                    </p>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <!-- REPARTO -->
+    <div class="card-custom rounded-4 p-4 mb-5">
+        <h3 class="small fw-bold text-uppercase text-muted-custom mb-3">
+            Reparto Principal
+        </h3>
+
+        <div class="d-flex gap-4 overflow-auto">
+            <!-- actor -->
+            <div class="text-center" style="min-width:80px">
+                <div class="rounded-circle border mb-2"
+                     style="width:64px;height:64px;background:url('URL') center/cover"></div>
+                <small>Leo DiCaprio</small>
+            </div>
+        </div>
+    </div>
+    <!-- RESEÑAS -->
+    <div class="row g-5 mb-5">
+
+        <!-- LISTADO -->
+        <div class="col-lg-8">
+            <div class="card-custom rounded-4 p-4">
+                <h3 class="fw-bold mb-4">Reseñas</h3>
+
+                <!-- escribir reseña -->
+                <textarea class="form-control mb-3"
+                          placeholder="Escribí tu reseña..."
+                          rows="3"></textarea>
+
+                <div class="text-end mb-4">
+                    <button class="btn btn-primary">Publicar</button>
+                </div>
+
+                <!-- reseña -->
+                <div class="d-flex gap-3">
+                    <div class="rounded-circle"
+                         style="width:40px;height:40px;background:url('URL') center/cover"></div>
+                    <div>
+                        <strong>Marcus Chen</strong>
+                        <p class="small text-muted mb-1">★★★★★</p>
+                        <p class="small text-muted-custom m-0">
+                            Absolutely mind-bending!
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- IA -->
+        <div class="col-lg-4 position-sticky" style="top:100px">
+            <div class="ai-card rounded-4 p-4">
+                <h3 class="fw-bold small mb-3">Resumen IA</h3>
+                <p class="small text-muted-custom">
+                    Basado en 1.240 reseñas...
+                </p>
+            </div>
+        </div>
+
+    </div>
+    <!-- RECOMENDACIONES -->
+    <hr class="border-secondary my-5 opacity-25">
+
+    <h3 class="fw-bold mb-4">Recomendaciones</h3>
+
+    <div class="row row-cols-2 row-cols-md-4 g-4">
+        <!-- card -->
+        <div class="col">
+            <img class="w-100 rounded mb-2" src="URL">
+            <strong>Interstellar</strong>
+            <p class="small text-muted">2014 • Sci-Fi</p>
+        </div>
+    </div>
+
+</div>

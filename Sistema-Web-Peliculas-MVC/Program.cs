@@ -1,5 +1,7 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Sistema_Web_Peliculas_MVC.Data;
+using Sistema_Web_Peliculas_MVC.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,7 +11,32 @@ builder.Services.AddControllersWithViews();
 
 builder.Services.AddDbContext<MovieDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+//add identity
+builder.Services.AddIdentityCore<Usuario>(options =>
+{
+    options.SignIn.RequireConfirmedAccount = true;
+    options.Password.RequiredLength = 3;
+    options.Password.RequireNonAlphanumeric = false;
+    options.Password.RequireUppercase = false;
+})
+    .AddRoles<IdentityRole>()
+    .AddEntityFrameworkStores<MovieDbContext>()    
+    .AddSignInManager();
 
+//manejo de las cookies.Lo ponemos en default, pero hay que ponerlo
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultScheme = IdentityConstants.ApplicationScheme;
+}).AddIdentityCookies();
+
+
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.ExpireTimeSpan = TimeSpan.FromMinutes(60);  
+    options.SlidingExpiration = true;
+    options.LoginPath = "/Usuario/Login";
+    options.AccessDeniedPath = "/Usuario/AccessDenied";
+});
 
 var app = builder.Build();
 //invocar DbSeeder

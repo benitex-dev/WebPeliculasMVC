@@ -19,13 +19,24 @@ namespace Sistema_Web_Peliculas_MVC.Controllers
         }
 
         [HttpPost]
-        public IActionResult Login(RegistroViewModel usuario)
+        public async Task<IActionResult> Login(LoginViewModel usuario)
         {
             if (ModelState.IsValid)
             {
                 // Lógica de autenticación aquí
+               var resultado = await _signInManager
+                               .PasswordSignInAsync(usuario.Email, usuario.Password,usuario.RememberMe, lockoutOnFailure: false);
+                if (resultado.Succeeded)
+                {
+                     return RedirectToAction("Index", "Home");
+                }
+                else
+                {
+                     ModelState.AddModelError(string.Empty, "Intento de inicio de sesión no válido.");
+                }
+
             }
-            return View();
+            return View(usuario);
         }
         public IActionResult Logout()
         {

@@ -1,0 +1,56 @@
+﻿@model LoginViewModel
+<main class="flex-grow-1 position-relative d-flex align-items-center justify-content-center p-4">
+    <div class="abstract-bg">
+        <div class="bg-orb orb-1"></div>
+        <div class="bg-orb orb-2"></div>
+        <div class="position-absolute w-100 h-100" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuArb19aAnyr43Jax8Cz9WwuNJwFIlZeOls-HVxToYMahm4FntNpgFeHxN8VTDzAbhetv6-f1ruMd8f1EXK_pdjAvM_XYnSevGCNvePduLAHAk7SY61MR7eeoyfwG_yfyBWN8soiCCpq0Rz6ieqq2bJ0-ZZAQlGrnB1ZL8MAyk1aJVgU0GioplNWM4olRXKpkjKoko1XJQVImrxdM94GqrHG42g1ABm_QgzbqLarPRz1g5FKLm-plcE8E1afEy1wH1UASZsU3tGW9as9'); opacity: 0.05; background-size: cover; background-position: center; mix-blend-mode: overlay;"></div>
+    </div>
+    <div class="card login-card w-100" style="max-width: 480px;">
+        <div class="card-body p-4 p-sm-5">
+            <div class="text-center text-sm-start mb-4">
+                <h1 class="h2 fw-bold text-white mb-2">Bienvenido de nuevo</h1>
+                <p class="text-secondary mb-0">Accede a las mejores reseñas y recomendaciones con IA.</p>
+            </div>
+            <form method="post" novalidate>
+               <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+                <div class="mb-3">
+                    <label class="form-label text-white fw-medium small" asp-for="Email">Correo electrónico o Usuario</label>
+                    <div class="input-group">
+                        <input class="form-control py-2"asp-for="Email" placeholder="ejemplo@correo.com" type="email" />
+                        <span class="input-group-text">
+                            <span class="material-symbols-outlined fs-5 text-secondary" asp-validation-for="Email">Email</span>
+                        </span>
+                    </div>
+                </div>
+                <div class="mb-4">
+                    <div class="d-flex justify-content-between align-items-center mb-1">
+                        <label class="form-label text-white fw-medium small mb-0" for="password">Contraseña</label>
+                        <a class="text-primary text-decoration-none small fw-medium" href="#">¿Olvidaste tu contraseña?</a>
+                    </div>
+                    <div class="input-group">
+                        <input class="form-control py-2" placeholder="••••••••" asp-for="Password" type="password" />
+                        <span class="input-group-text cursor-pointer">
+                            <span class="material-symbols-outlined fs-5 text-secondary" asp-validation-for="Password">visibility_off</span>
+                        </span>
+                    </div>
+                </div>
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div class="form-check">
+                        <input class="form-check-input" asp-for="RememberMe" type="checkbox" />
+                        <label class="form-check accept-policy-label text-white small fw-medium" asp-for="RememberMe">Recordarme</label>
+                     </div>
+                </div>
+                <button class="btn btn-primary w-100 py-2 fw-bold mb-4 shadow-sm" type="submit">
+                    Iniciar Sesión
+                </button>
+                
+                <div class="text-center">
+                    <p class="text-secondary small mb-0">
+                        ¿No tienes una cuenta?
+                        <a asp-controller="Usuario" asp-action="Registro" class="text-primary fw-bold text-decoration-none">Regístrate aquí</a>
+                    </p>
+                </div>
+            </form>
+        </div>
+    </div>
+</main>

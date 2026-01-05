@@ -9,7 +9,7 @@ namespace Sistema_Web_Peliculas_MVC.Models
         [Required (ErrorMessage ="El mail es obligatorio.")]
         public string Email { get; set; }
 
-        [PasswordPropertyText]
+        [DataType(DataType.Password)]
         [Required (ErrorMessage ="La clave es obligatoria.")]
         public string Password { get; set; }
         public bool RememberMe { get; set; }

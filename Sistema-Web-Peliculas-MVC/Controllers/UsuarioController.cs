@@ -40,7 +40,8 @@ namespace Sistema_Web_Peliculas_MVC.Controllers
         }
         public IActionResult Logout()
         {
-            return View();
+            _signInManager.SignOutAsync();
+            return RedirectToAction("Index","Home");
         }
         public IActionResult Registro()
         {

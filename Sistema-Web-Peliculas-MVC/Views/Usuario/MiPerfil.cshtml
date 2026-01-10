@@ -1,0 +1,186 @@
+﻿@model MiPerfilViewModel
+<style>
+     :root {
+        --bs-body-bg: #111722;
+        --bs-body-color: #ffffff;
+        --bs-primary: #135bec;
+        --bs-primary-rgb: 19, 91, 236;
+        --bs-border-color: #324467;
+    } 
+
+     body {
+        font-family: 'Spline Sans', sans-serif;
+        background-color: var(--bs-body-bg);
+    } 
+
+     .navbar-custom {
+        background-color: #111722;
+        border-bottom: 1px solid #324467;
+    } 
+
+     .bg-surface-dark {
+        background-color: #232f48;
+    } 
+
+    .card-custom {
+        background-color: rgba(35, 47, 72, 0.4);
+        border: 1px solid rgba(50, 68, 103, 0.5);
+    }
+
+    .form-control {
+        background-color: #192233;
+        border-color: #324467;
+        color: #ffffff;
+    }
+
+        .form-control:focus {
+            background-color: #192233;
+            border-color: var(--bs-primary);
+            color: #ffffff;
+            box-shadow: 0 0 0 0.25rem rgba(19, 91, 236, 0.25);
+        }
+
+        .form-control::placeholder {
+            color: #92a4c9;
+        }
+
+    .text-secondary-custom {
+        color: #92a4c9 !important;
+    }
+
+    .avatar-container {
+        width: 128px;
+        height: 128px;
+        position: relative;
+        border-radius: 50%;
+        overflow: hidden;
+        border: 4px solid #232f48;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+    }
+
+    .avatar-img {
+        width: 100%;
+        height: 100%;
+        background-size: cover;
+        background-position: center;
+    }
+
+    .avatar-overlay {
+        background-color: rgba(0,0,0,0.5);
+        opacity: 0;
+        transition: opacity 0.3s;
+    }
+
+    .avatar-container:hover .avatar-overlay {
+        opacity: 1;
+    }
+
+    .btn-icon {
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .hover-primary:hover {
+        color: var(--bs-primary) !important;
+        transition: color 0.2s;
+    }
+</style>
+<main class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-xl-10 col-xxl-8">
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-5 gap-3">
+                <div>
+                    <h1 class="fw-bold mb-2">Mi Perfil</h1>
+                    <p class="text-secondary-custom mb-0">Actualiza tu información personal y configura la seguridad de tu cuenta.</p>
+                </div>
+                <a class="text-decoration-none text-secondary-custom d-flex align-items-center gap-1 hover-primary" href="#">
+                    <span class="material-symbols-outlined fs-6">arrow_back</span>
+                    Volver al perfil
+                </a>
+            </div>
+            <div class="d-flex flex-column align-items-center mb-5">
+                <div class="avatar-container mb-3" role="button">
+                    <div class="avatar-img" 
+                    style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAEmjjPi9dvddNbycip_6OqSmo93zaLXWjv16wqqLuZERa1UfpQJzFlANBU6lIn-ZWHnTLX4F3l_KhKFAIgoeQIy1eUJ3a9gQ4ZtmPf49142mlZB0uFlLP7k1hY4DdhWSNptV6BrY-AaX31ZW-9iE-XgF7d2-DlGHLoRjoZVkqu5qcvLynzdzeRNS7YiGCgNhcb_O4xgEItPc2mmCvzt0kQ-OKFSe_N7swUXgdBtHwV_TEXP7kgrAcbFbtsNPwtYIJnZtRBFVlXw42e');"></div>
+                    <div class="avatar-overlay position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center text-white">
+                        <span class="material-symbols-outlined fs-3">photo_camera</span>
+                    </div>
+                </div>
+                <h3 class="h4 fw-bold mb-1">@Model.Nombre @Model.Apellido</h3>
+                <button class="btn btn-link text-primary text-decoration-none p-0 fw-medium">Cambiar foto de perfil</button>
+            </div>
+            <div class="card card-custom rounded-4 p-4 p-md-5">
+                <form method="post">
+                    <div class="mb-5">
+                        <h4 class="h5 fw-bold mb-4 pb-2 border-bottom border-secondary border-opacity-25 d-flex align-items-center gap-2 text-white">
+                            <span class="material-symbols-outlined text-primary">badge</span>
+                            Información Personal
+                        </h4>
+                        <div class="row g-4">
+                            <div class="col-md-6">
+                                <label class="form-label text-white fw-medium" asp-for="Nombre">Nombre</label>
+                                <input class="form-control py-2" asp-for="Nombre" type="text" />
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label text-white fw-medium" asp-for="Apellido">Apellido</label>
+                                <input class="form-control py-2" asp-for="Apellido" placeholder="Ingresa tu apellido" type="text" />
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label text-white fw-medium" asp-for="Email">Correo Electrónico</label>
+                                <div class="position-relative">
+                                    <input class="form-control py-2 pe-5" disabled asp-for="Email"  type="email"  />
+                                    <div class="position-absolute top-50 end-0 translate-middle-y me-3 text-success d-flex" title="Verificado">
+                                        <span class="material-symbols-outlined fs-5">check_circle</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                   @*  <div class="mb-2">
+                        <h4 class="h5 fw-bold mb-4 pb-2 border-bottom border-secondary border-opacity-25 d-flex align-items-center gap-2 text-white">
+                            <span class="material-symbols-outlined text-primary">lock</span>
+                            Seguridad
+                        </h4>
+                        <div class="row g-4">
+                            <div class="col-12">
+                                <label class="form-label text-white fw-medium">Contraseña Actual</label>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <input class="form-control py-2" type="password" value="password123" />
+                                        <div class="form-text text-secondary-custom mt-1">Necesaria para confirmar los cambios.</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label text-white fw-medium">Nueva Contraseña</label>
+                                <input class="form-control py-2" placeholder="••••••••" type="password" />
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label text-white fw-medium">Confirmar Contraseña</label>
+                                <input class="form-control py-2" placeholder="••••••••" type="password" />
+                            </div>
+                        </div>
+                    </div> *@
+                    <div class="d-flex flex-column flex-sm-row justify-content-end gap-3 pt-4 mt-5 border-top border-secondary border-opacity-25">
+                        <button class="btn btn-outline-light text-white border-secondary fw-bold px-4 py-2 w-100 w-sm-auto" type="button">
+                            Cancelar
+                        </button>
+                        <button class="btn btn-primary fw-bold px-4 py-2 w-100 w-sm-auto" type="submit">
+                            Guardar Cambios
+                        </button>
+                    </div>
+                </form>
+                @if (ViewBag.Message!=null)
+                {
+                    <div class="alert alert-success" role="alert">
+                        @ViewBag.Message
+                    </div>
+                }
+                
+            </div>
+        </div>
+    </div>
+</main>

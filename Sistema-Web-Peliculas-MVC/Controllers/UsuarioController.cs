@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Sistema_Web_Peliculas_MVC.Models;
 
@@ -83,6 +84,51 @@ namespace Sistema_Web_Peliculas_MVC.Controllers
         public IActionResult AccessDenied()
         {
             return View();
-        }   
+        }
+
+        [Authorize]
+        public async Task<IActionResult> MiPerfil()
+        {
+            var usuarioActual = await _userManager.GetUserAsync(User);
+           
+            
+            var usuario = new MiPerfilViewModel
+            {
+                Nombre = usuarioActual.Nombre,
+                Apellido = usuarioActual.Apellido,
+                Email = usuarioActual.Email,
+                ImagenUrlPerfil = usuarioActual.ImagenUrlPerfil
+            };
+            return View(usuario);
+        }
+        [Authorize]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> MiPerfil(MiPerfilViewModel modelo)
+        {
+            if (ModelState.IsValid)
+            {
+                var usuarioActual = await _userManager.GetUserAsync(User);
+                usuarioActual.Nombre = modelo.Nombre;
+                usuarioActual.Apellido = modelo.Apellido;
+                
+                // Aquí podrías agregar lógica para actualizar la imagen de perfil si es necesario
+                var resultado = await _userManager.UpdateAsync(usuarioActual);
+                
+                if (resultado.Succeeded)
+                {
+                    ViewBag.Message = "Perfil actualizado exitosamente.";
+                    return View(modelo);
+                }
+                else
+                {
+                    foreach (var error in resultado.Errors)
+                    {
+                        ModelState.AddModelError(string.Empty, error.Description);
+                    }
+                }
+            }
+            return View(modelo);
+        }
     }
 }

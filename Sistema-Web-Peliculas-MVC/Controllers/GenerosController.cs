@@ -1,15 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Sistema_Web_Peliculas_MVC.Data;
 using Sistema_Web_Peliculas_MVC.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Sistema_Web_Peliculas_MVC.Controllers
 {
+    [Authorize(Roles = "Admin")]
+
     public class GenerosController : Controller
     {
         private readonly MovieDbContext _context;

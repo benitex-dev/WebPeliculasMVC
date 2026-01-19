@@ -1,4 +1,7 @@
-﻿@model Pelicula
+﻿@using Microsoft.AspNetCore.Identity
+@inject SignInManager<Usuario> SignInManager
+@inject UserManager<Usuario> UserManager
+@model Pelicula
 
 @{
 
@@ -70,76 +73,164 @@
             </div>
         </div>
     </div>
-    <!-- REPARTO -->
-    <div class="card-custom rounded-4 p-4 mb-5">
-        <h3 class="small fw-bold text-uppercase text-muted-custom mb-3">
-            Reparto Principal
-        </h3>
-
-        <div class="d-flex gap-4 overflow-auto">
-            <!-- actor -->
-            <div class="text-center" style="min-width:80px">
-                <div class="rounded-circle border mb-2"
-                     style="width:64px;height:64px;background:url('URL') center/cover"></div>
-                <small>Leo DiCaprio</small>
-            </div>
-        </div>
-    </div>
     <!-- RESEÑAS -->
     <div class="row g-5 mb-5">
 
         <!-- LISTADO -->
         <div class="col-lg-8">
             <div class="card-custom rounded-4 p-4">
-                <h3 class="fw-bold mb-4">Reseñas</h3>
-
-                <!-- escribir reseña -->
-                <textarea class="form-control mb-3"
-                          placeholder="Escribí tu reseña..."
-                          rows="3"></textarea>
-
-                <div class="text-end mb-4">
-                    <button class="btn btn-primary">Publicar</button>
+                <h3 class="fw-bold mb-4">Reviews</h3>
+                <div class="d-grid gap-3 d-sm-flex  my-4">
+                    <button onclick="cargarLlm('Resumen','@Model.Titulo')"
+                            class="btn btn-primary btn-sm d-flex align-items-center justify-content-center gap-2"
+                            type="button">
+                        <span class="material-symbols-outlined">
+                            auto_awesome                          
+                        </span>
+                        <span>Resumen IA</span>
+                    </button>
+                    <button type="button"
+                            onclick="cargarLlm('Spoiler','@Model.Titulo')"
+                            class="btn btn-primary btn-sm d-flex align-items-center justify-content-center gap-2">
+                        <span class="material-symbols-outlined">
+                            movie        
+                        </span>
+                        <span>Mostrar Spoiler</span>
+                    </button>
+                    <button type="button"
+                            class="btn btn-primary btn-sm"
+                            @(ViewBag.UserReview ? "disabled" : "")
+                            data-bs-toggle="modal"
+                            data-bs-target="#createReviewModal">
+                        Publicar review
+                    </button>
                 </div>
+                @* mostrar mensajes de exito o de error *@
+                @if(TempData["ReviewExiste"] != null)
+                {
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        @TempData["ReviewExiste"]
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                }
 
                 <!-- reseña -->
-                <div class="d-flex gap-3">
-                    <div class="rounded-circle"
-                         style="width:40px;height:40px;background:url('URL') center/cover"></div>
-                    <div>
-                        <strong>Marcus Chen</strong>
-                        <p class="small text-muted mb-1">★★★★★</p>
-                        <p class="small text-muted-custom m-0">
-                            Absolutely mind-bending!
-                        </p>
+                @foreach (var item in Model.ListaReviews)
+                {
+                    <div class="d-flex gap-3 border-5 border-light">
+                        <div class="rounded-circle" style="width:40px;height:40px;background:url('@item.Usuario.ImagenUrlPerfil') center/cover">
+                        </div>
+                        <div>
+                            <h5 class="mb-0 text-light">@string.Concat(item.Usuario.Nombre, " ", item.Usuario.Apellido)</h5>
+                            <small class="">@item.FechaReview.ToShortDateString()</small>
+                            <div class="mb-2">
+                                @for (int i = 1; i <= 5; i++)
+                                {
+                                    if (i <= item.Rating)
+                                    {
+                                        <span class="material-symbols-outlined star-filled">star</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="material-symbols-outlined star-empty">grade</span>
+                                    }
+                                }
+                            </div>
+                            <p class="small text-muted-custom m-0">
+                               @item.Comentario
+                            </p>
+                            @if (SignInManager.IsSignedIn(User))
+                            {
+                                @if (UserManager.IsInRoleAsync(await UserManager.GetUserAsync(User), "Admin").Result)
+                                {
+                                    <a asp-controller="Review" asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-warning">
+                                        <span class="material-symbols-outlined">edit</span> Editar
+                                    </a>
+                                }
+
+                            }
+                           
+                        </div>
                     </div>
-                </div>
+                }
+                
             </div>
         </div>
 
-        <!-- IA -->
-        <div class="col-lg-4 position-sticky" style="top:100px">
-            <div class="ai-card rounded-4 p-4">
-                <h3 class="fw-bold small mb-3">Resumen IA</h3>
-                <p class="small text-muted-custom">
-                    Basado en 1.240 reseñas...
-                </p>
-            </div>
-        </div>
+       
 
     </div>
-    <!-- RECOMENDACIONES -->
-    <hr class="border-secondary my-5 opacity-25">
-
-    <h3 class="fw-bold mb-4">Recomendaciones</h3>
-
-    <div class="row row-cols-2 row-cols-md-4 g-4">
-        <!-- card -->
-        <div class="col">
-            <img class="w-100 rounded mb-2" src="URL">
-            <strong>Interstellar</strong>
-            <p class="small text-muted">2014 • Sci-Fi</p>
-        </div>
-    </div>
+    
 
 </div>
+@{
+    var peliculaReviewModel = new CreateReviewViewModel
+    {
+        PeliculaId = Model.Id,
+        PeliculaTItulo = Model.Titulo
+    };
+}
+<partial name="~/Views/Review/_CreateReview.cshtml" model="peliculaReviewModel"/>
+
+@* Modal LLM *@
+@{
+    var llmViewModel = new ModalLlmViewModel
+    {
+        Tipo = "",
+        Pelicula = Model.Titulo,
+        SpoilerResumen = ""
+    };
+}
+<partial name="~/Views/Home/_ModalLlm.cshtml" model="llmViewModel" />
+
+<style>
+    .star-filled {
+        color: #ffc107;
+    }
+
+    .star-empty {
+        color: #6c757d;
+    }
+</style>
+@section Scripts {
+    <script>
+        function cargarLlm(tipo, tituloPelicula) {
+           //Mostrar el modal
+           const myModal = new bootstrap.Modal(document.getElementById('llmModal'));
+           //Actualizar el titulo del modal
+              document.getElementById('modalTipoText').textContent = tipo;
+              document.getElementById('modalPeliculaTexto').textContent = tituloPelicula;
+              //mostrar spinner y ocultar contenido
+                document.getElementById('llmModalLoading').style.display = 'block';
+                document.getElementById('llmModalContent').style.display = 'none';
+
+                myModal.show();
+            //determinar la url según el tipo
+            const url = tipo === 'Spoiler'
+                ? '@Url.Action("Spoiler","Home")?titulo=' + encodeURIComponent(tituloPelicula)
+                : '@Url.Action("Resumen", "Home")?titulo='  + encodeURIComponent(tituloPelicula);
+
+                //hacer la llamada AJAX
+                fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    if(data.success){
+                        //Actualizar el contenido del modal
+                    document.getElementById('llmModalContent').innerHTML = '<p>' + data.data + '</p>';
+                    }else{
+                         document.getElementById('llmModalContent').innerHTML = '<div class="alert alert-danger">Error:' + data.message + '</div>';
+                    }
+                })
+                .catch(error=>
+                    {document.getElementById('llmModalContent').innerHTML = 
+                    '<div class="alert alert-danger">Error al cargar información:'+error.message+'</div>';
+                    }
+                )
+                .finally(()=>{
+                    //Ocultar el spinner y mostrar el contenido
+                    document.getElementById('llmModalLoading').style.display = 'none';
+                    document.getElementById('llmModalContent').style.display = 'block';
+                });
+        }
+    </script>
+}

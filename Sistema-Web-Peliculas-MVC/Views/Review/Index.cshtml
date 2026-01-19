@@ -1,0 +1,43 @@
+﻿@model List<Review>
+@{
+}
+<style>
+    .star-filled {
+        color: #ffc107;
+    }
+
+    .star-empty {
+        color: #6c757d;
+    }
+</style>
+
+<h1>Mis Reviews</h1>
+
+@foreach (var item in Model)
+{  
+    <div class="d-flex gap-3 border-5 border-light">
+        <div class="rounded-circle" style="width:40px;height:40px;background:url('@item.Pelicula.PosterUrlPortada') center/cover">
+        </div>
+        <div>
+            <h5 class="mb-0 text-light">@item.Pelicula.Titulo</h5>
+            <small class="">@item.FechaReview</small>
+            <div class="mb-2">
+                @for (int i = 1; i <= 5; i++)
+                {
+                    if (i <= item.Rating)
+                    {
+                        <span class="material-symbols-outlined star-filled">star</span>
+                    }
+                    else
+                    {
+                        <span class="material-symbols-outlined star-empty">grade</span>
+                    }
+                }
+            </div>
+            <p class="small text-muted-custom m-0">
+                @item.Comentario
+            </p>
+        </div>
+    </div>
+    <a class="mb-3 mt-2 btn btn-primary"  asp-action="Edit" asp-route-id="@item.Id">Editar</a>
+}

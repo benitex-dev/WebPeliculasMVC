@@ -1,21 +1,25 @@
 using System.Diagnostics;
+using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Sistema_Web_Peliculas_MVC.Data;
 using Sistema_Web_Peliculas_MVC.Models;
+using Sistema_Web_Peliculas_MVC.Services;
 
 namespace Sistema_Web_Peliculas_MVC.Controllers
 {
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly LlmService _llmService;
         private readonly MovieDbContext _context;
 
-        public HomeController(ILogger<HomeController> logger,MovieDbContext context)
+        public HomeController(ILogger<HomeController> logger,MovieDbContext context,LlmService llmService)
         {
             _logger = logger;
             _context = context;
+            _llmService = llmService;
         }
 
         public async Task<IActionResult> Index(int page = 1, string txtBusqueda="",int generoId=0)
@@ -63,14 +67,54 @@ namespace Sistema_Web_Peliculas_MVC.Controllers
         }
         public async  Task<IActionResult> Details(int id)
         {
+            if (id <= 0) return BadRequest();
             var pelicula = await _context.Peliculas
                 .Include(p => p.Genero)
+                .Include(p => p. ListaReviews)
+                .ThenInclude(r => r.Usuario)
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (pelicula == null)
+            
+            if (pelicula == null) return NotFound();
+
+            ViewBag.UserReview = false;
+            if(User?.Identity?.IsAuthenticated ==true && pelicula.ListaReviews != null)
             {
-                return NotFound();
+                string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                ViewBag.UserReview = !(pelicula.ListaReviews.FirstOrDefault(r => r.UsuarioId == userId) == null);
             }
+
+
+
+           
             return View(pelicula);
+        }
+        [HttpGet]
+        public async Task<IActionResult> Spoiler(string titulo)
+        {
+            try
+            {
+                var spoiler = await _llmService.ObtenerSpoilerAsync(titulo);
+                return Json(new {success=true,data=spoiler});
+            }
+            catch (Exception ex)
+            {
+
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+        [HttpGet]
+        public async Task<IActionResult> Resumen(string titulo)
+        {
+            try
+            {
+                var resumen = await _llmService.ObtenerResumenAsync(titulo);
+                return Json(new { success = true, data = resumen });
+            }
+            catch (Exception ex)
+            {
+
+                return Json(new { success = false, message = ex.Message });
+            }
         }
         public IActionResult Privacy()
         {

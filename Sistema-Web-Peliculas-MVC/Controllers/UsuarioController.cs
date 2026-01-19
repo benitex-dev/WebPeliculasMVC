@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Sistema_Web_Peliculas_MVC.Models;
+using Sistema_Web_Peliculas_MVC.Services;
 
 namespace Sistema_Web_Peliculas_MVC.Controllers
 {
@@ -9,10 +10,14 @@ namespace Sistema_Web_Peliculas_MVC.Controllers
     {
         private readonly UserManager<Usuario> _userManager;
         private readonly SignInManager<Usuario> _signInManager;
-        public UsuarioController(UserManager<Usuario> userManager, SignInManager<Usuario> signInManager)
+        private readonly ImagenStorage _imagenStorage;
+        private readonly IEmailService _emailService;
+        public UsuarioController(UserManager<Usuario> userManager, SignInManager<Usuario> signInManager, ImagenStorage imagenStorage, IEmailService emailService)
         {
                 _userManager = userManager;
                 _signInManager = signInManager;
+                _imagenStorage = imagenStorage;
+                _emailService = emailService;
         }
         public IActionResult Login()
         {
@@ -62,12 +67,13 @@ namespace Sistema_Web_Peliculas_MVC.Controllers
                     Email = usuario.Email,
                     Nombre = usuario.Nombre,
                     Apellido = usuario.Apellido,
-                    ImagenUrlPerfil = "default-profile.png"
+                    ImagenUrlPerfil = "/images/default-avatar.jpg"
                 };  
                 var resultado =await _userManager.CreateAsync(nuevoUsuario, usuario.Password);
                 if (resultado.Succeeded)
                 {
                     await _signInManager.SignInAsync(nuevoUsuario, isPersistent: false);
+                    await _emailService.SendAsync(nuevoUsuario.Email, "Bienvenido a Sistema Web Películas", "<h1>Gracias por registrarte en nuestro sitio web de películas.</h1><p>Esperamos que disfrutes la plataforma</p>");
                     return RedirectToAction("Index", "Home");
                 }
                 else
@@ -109,6 +115,29 @@ namespace Sistema_Web_Peliculas_MVC.Controllers
             if (ModelState.IsValid)
             {
                 var usuarioActual = await _userManager.GetUserAsync(User);
+
+                try
+                {
+                    // Aquí podrías agregar lógica para manejar la carga de la nueva imagen de perfil si es necesario
+                    if(modelo.ImagenPerfil is not null && modelo.ImagenPerfil.Length > 0)
+                    {
+                        if (!string.IsNullOrWhiteSpace(usuarioActual.ImagenUrlPerfil))
+                        {
+                            await _imagenStorage.DeleteAsync(usuarioActual.ImagenUrlPerfil);
+                        }
+                        var nuevaRuta = await _imagenStorage.SaveAsync(usuarioActual.Id, modelo.ImagenPerfil);
+
+                        usuarioActual.ImagenUrlPerfil = nuevaRuta;
+                        modelo.ImagenUrlPerfil = nuevaRuta;
+                    }
+
+                }
+                catch (Exception ex)
+                {
+                    ModelState.AddModelError(string.Empty,  ex.Message);
+                    return View(modelo);
+                }
+
                 usuarioActual.Nombre = modelo.Nombre;
                 usuarioActual.Apellido = modelo.Apellido;
                 

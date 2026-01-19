@@ -101,19 +101,24 @@
                     Volver al perfil
                 </a>
             </div>
+            <form method="post" enctype="multipart/form-data">
             <div class="d-flex flex-column align-items-center mb-5">
-                <div class="avatar-container mb-3" role="button">
-                    <div class="avatar-img" 
-                    style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAEmjjPi9dvddNbycip_6OqSmo93zaLXWjv16wqqLuZERa1UfpQJzFlANBU6lIn-ZWHnTLX4F3l_KhKFAIgoeQIy1eUJ3a9gQ4ZtmPf49142mlZB0uFlLP7k1hY4DdhWSNptV6BrY-AaX31ZW-9iE-XgF7d2-DlGHLoRjoZVkqu5qcvLynzdzeRNS7YiGCgNhcb_O4xgEItPc2mmCvzt0kQ-OKFSe_N7swUXgdBtHwV_TEXP7kgrAcbFbtsNPwtYIJnZtRBFVlXw42e');"></div>
-                    <div class="avatar-overlay position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center text-white">
-                        <span class="material-symbols-outlined fs-3">photo_camera</span>
-                    </div>
-                </div>
+                    <div class="avatar-container mb-3">                    
+                       <img alt="fotoPerfil" id="profileImage" class="img-fluid" src="@Model.ImagenUrlPerfil" />
+       
+                   </div>
+                    <input type="file" asp-for="ImagenPerfil" accept="image/png,image/jpg,image/webp" class="form-control mt-2" onchange="previewImage(this)" />
                 <h3 class="h4 fw-bold mb-1">@Model.Nombre @Model.Apellido</h3>
-                <button class="btn btn-link text-primary text-decoration-none p-0 fw-medium">Cambiar foto de perfil</button>
+                    <button 
+                            type="button"
+                            class="btn btn-link text-primary text-decoration-none p-0 fw-medium"
+                            onclick="documentgetElementById('ImagenUrlPerfil').click()">
+                           <span class="material-symbols-outlined" style="font-size:16px;">edit</span>           
+                     </button>
             </div>
+
             <div class="card card-custom rounded-4 p-4 p-md-5">
-                <form method="post">
+            
                     <div class="mb-5">
                         <h4 class="h5 fw-bold mb-4 pb-2 border-bottom border-secondary border-opacity-25 d-flex align-items-center gap-2 text-white">
                             <span class="material-symbols-outlined text-primary">badge</span>
@@ -139,31 +144,7 @@
                             </div>
                         </div>
                     </div>
-                   @*  <div class="mb-2">
-                        <h4 class="h5 fw-bold mb-4 pb-2 border-bottom border-secondary border-opacity-25 d-flex align-items-center gap-2 text-white">
-                            <span class="material-symbols-outlined text-primary">lock</span>
-                            Seguridad
-                        </h4>
-                        <div class="row g-4">
-                            <div class="col-12">
-                                <label class="form-label text-white fw-medium">Contraseña Actual</label>
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <input class="form-control py-2" type="password" value="password123" />
-                                        <div class="form-text text-secondary-custom mt-1">Necesaria para confirmar los cambios.</div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label text-white fw-medium">Nueva Contraseña</label>
-                                <input class="form-control py-2" placeholder="••••••••" type="password" />
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label text-white fw-medium">Confirmar Contraseña</label>
-                                <input class="form-control py-2" placeholder="••••••••" type="password" />
-                            </div>
-                        </div>
-                    </div> *@
+                   
                     <div class="d-flex flex-column flex-sm-row justify-content-end gap-3 pt-4 mt-5 border-top border-secondary border-opacity-25">
                         <button class="btn btn-outline-light text-white border-secondary fw-bold px-4 py-2 w-100 w-sm-auto" type="button">
                             Cancelar
@@ -172,15 +153,28 @@
                             Guardar Cambios
                         </button>
                     </div>
-                </form>
+                </div>
+            </form>
+            
                 @if (ViewBag.Message!=null)
                 {
                     <div class="alert alert-success" role="alert">
                         @ViewBag.Message
                     </div>
                 }
-                
+             </div>     
             </div>
-        </div>
-    </div>
+        
+    
 </main>
+<script>
+    function previewImage(input) {
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('profileImage').src = e.target.result;
+            };
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+</script>

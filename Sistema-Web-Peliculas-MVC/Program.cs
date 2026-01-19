@@ -1,7 +1,9 @@
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Sistema_Web_Peliculas_MVC.Data;
 using Sistema_Web_Peliculas_MVC.Models;
+using Sistema_Web_Peliculas_MVC.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -38,6 +40,16 @@ builder.Services.ConfigureApplicationCookie(options =>
     options.AccessDeniedPath = "/Usuario/AccessDenied";
 });
 
+builder.Services.AddScoped<ImagenStorage>();
+builder.Services.Configure<FormOptions>(o => { o.MultipartBoundaryLengthLimit = 2 * 1024 * 1024; });
+
+//configurar servicio de correo
+builder.Services.Configure<SmtpSettings>(builder.Configuration.GetSection("SmtpSettings"));
+builder.Services.AddScoped<IEmailService, SmtpEmailService>();
+
+//servicio de LLM
+builder.Services.AddScoped<LlmService>();
+
 var app = builder.Build();
 //invocar DbSeeder
 using (var scope = app.Services.CreateScope())
@@ -46,7 +58,9 @@ using (var scope = app.Services.CreateScope())
     try
     {
         var context = services.GetRequiredService<MovieDbContext>();
-        DbSeeder.Seed(context);
+        var userManager = services.GetRequiredService<UserManager<Usuario>>();
+        var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
+       await DbSeeder.Seed(context,userManager,roleManager);
     }
     catch (Exception ex)
     {

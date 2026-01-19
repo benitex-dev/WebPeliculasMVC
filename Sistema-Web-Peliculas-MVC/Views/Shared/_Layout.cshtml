@@ -1,5 +1,6 @@
 ﻿@using Microsoft.AspNetCore.Identity
 @inject SignInManager<Usuario> SignInManager
+@inject UserManager<Usuario> UserManager
 <!DOCTYPE html>
 <html lang="en" data-bs-theme="dark">
 <head>
@@ -36,21 +37,32 @@
                         Inicio
                     </a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link text-white" asp-controller="Generos" asp-action="Index">
-                        Géneros
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link text-white" asp-controller="Plataformas" asp-action="Index">
-                        Plataformas
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link text-white" asp-controller="Peliculas" asp-action="Index">
-                        Películas
-                    </a>
-                </li>
+                @if(UserManager.IsInRoleAsync(await UserManager.GetUserAsync(User), "Admin").Result)
+                {
+                        <li class="nav-item">
+                            <a class="nav-link text-white" asp-controller="Generos" asp-action="Index">
+                                Géneros
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-white" asp-controller="Plataformas" asp-action="Index">
+                                Plataformas
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-white" asp-controller="Peliculas" asp-action="Index">
+                                Películas
+                            </a>
+                        </li>
+                }
+    
+              
+
+                    <li class="nav-item">
+                        <a class="nav-link text-white" asp-controller="Review" asp-action="Index">
+                            Reviews
+                        </a>
+                    </li>
             </ul>
             }
             @if(SignInManager.IsSignedIn(User))

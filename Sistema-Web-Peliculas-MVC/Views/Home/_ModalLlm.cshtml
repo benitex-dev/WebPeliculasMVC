@@ -1,0 +1,48 @@
+﻿@model ModalLlmViewModel
+@{
+
+}
+
+<!-- Modal -->
+<div class="modal fade" id="llmModal" tabindex="-1" aria-labelledby="llmModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="llmModalLabel">
+                    <span id="modalTipoText">
+                        @Model?.Tipo
+                    </span>
+                    -
+                    <span
+                        id="modalPeliculaTexto">
+                        @Model?.Pelicula
+                    </span>
+                </h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+           
+                <div class="modal-body">
+                   
+                   <div id="llmModalContent">
+                       <p>
+                           @Model.SpoilerResumen
+                       </p>
+                   </div>
+                  <div class="text-center" id="llmModalLoading" style="display:none">
+                      <div class="spinner-border text-primary" role="status">
+                          <span 
+                              
+                              class="visually-hidden">Cargando...</span>
+                      </div>
+                      <p class="mt-2">Consultando con la IA...</p>
+                  </div>
+
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                </div>
+           
+        </div>
+    </div>
+</div>

@@ -1,12 +1,42 @@
-﻿using Sistema_Web_Peliculas_MVC.Models;
+﻿using Microsoft.AspNetCore.Identity;
+using Sistema_Web_Peliculas_MVC.Models;
+using System.Threading.Tasks;
 
 namespace Sistema_Web_Peliculas_MVC.Data
 {
     public class DbSeeder
     {
-        public static void Seed(MovieDbContext context)
+        public static async Task Seed(MovieDbContext context, UserManager<Usuario> userManager,RoleManager<IdentityRole> roleManager)
         {
             context.Database.EnsureCreated();
+
+            if (! await roleManager.RoleExistsAsync("Admin")) {
+                await roleManager.CreateAsync(new IdentityRole("Admin"));
+            }
+
+            //crear usuario admin si no hay usuario admin
+            var admin = await userManager.FindByEmailAsync("admin@admin.com");
+            if (admin == null)
+            {
+                admin = new Usuario
+                {
+                    UserName = "admin@admin.com",
+                    Email = "admin@admin.com",
+                    Nombre = "Admin",
+                    Apellido = "Sistema",
+                    ImagenUrlPerfil = "/images/default-avatar.jpg"
+
+
+                };
+                var result = await userManager.CreateAsync(admin, "Admin123");
+                if (result.Succeeded)
+                {
+                    await userManager.AddToRoleAsync(admin, "Admin");
+                }
+            }
+
+           
+
             if (context.Generos.Any()||context.Peliculas.Any()||context.Plataformas.Any())
             {
                 return; // La base de datos ya ha sido sembrada

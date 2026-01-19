@@ -16,7 +16,7 @@ namespace Sistema_Web_Peliculas_MVC.Models
         [DataType(DataType.Date)]   
         public DateTime FechaNacimiento { get; set; }
 
-        public string ImagenUrlPerfil { get; set; }
+        public string? ImagenUrlPerfil { get; set; }
         public List<Favorito>? ListaFavoritos { get; set; }
         public List<Review>? ReviewsUsuarios { get; set; }
     }
